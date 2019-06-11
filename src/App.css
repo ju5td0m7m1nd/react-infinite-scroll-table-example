@@ -1,26 +1,25 @@
+html, body, #root{
+  margin: 0px;
+  height: 100%;
+}
+
+p, h1, h2, h3, h4, h5 {
+  margin: 0px;
+}
+
 .App {
+  min-height: 100%;
   text-align: center;
+  background-color: #000;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+table > tbody > tr {
+  transition: all .3s ease-in;
 }
-
-.App-link {
-  color: #61dafb;
+table > tbody > tr > td {
+  padding: 10px;
+  transition: all .3s ease-in;
 }
 
 @keyframes App-logo-spin {
