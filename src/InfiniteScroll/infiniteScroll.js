@@ -19,83 +19,65 @@ const ShowBtn = styled.p`
 const blockNum = 3;
 
 class App extends React.Component {
-  state = {
+  defaultProps = {
     open: false,
+  };
+
+  state = {
     cursor: 0,
   };
-  sentinels = [];
-  componentDidMount() {
-    this.observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            this.setState(
-              { cursor: +e.target.getAttribute('index') },
-              this.observeSentinel
-            );
-          }
-        });
-      },
-      {
-        root: document.querySelector('App'),
-        rootMargin: '30px',
-      }
-    );
-    this.sentinels.forEach(el => this.observer.observe(el));
-  }
 
-  observeSentinel = () => {
-    this.sentinels.forEach(el => el && this.observer.observe(el));
-  };
+  componentDidMount() {}
 
   handleOpen = () =>
     this.setState(({ open }) => ({ open: !open }), this.observeSentinel);
   handleSentinel = c => {
-    this.sentinels = this.sentinels.concat(c);
+    // setup
+    if (!this.observer) {
+      this.observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              this.setState({ cursor: +e.target.getAttribute('index') });
+            }
+          });
+        },
+        {
+          root: document.querySelector('App'),
+          rootMargin: '-30px',
+        }
+      );
+    }
+    if (!c) return;
+    this.observer.observe(c);
   };
 
   render() {
-    const { open, cursor } = this.state;
+    const { cursor } = this.state;
+    const { open } = this.props;
+    if (!open) return <div />;
     return (
-      <div className="App">
-        <div style={{ width: 'content-fit' }}>
-          <ShowBtn onClick={this.handleOpen}>
-            Show table |
-            <span
-              style={{ fontSize: '12px', color: '#AAA', marginLeft: '12px' }}
-            >
-              infinite version.
-            </span>
-          </ShowBtn>
-        </div>
-        {open
-          ? <table style={{ width: '100%' }}>
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Id</th>
-                  <th>Gender</th>
-                  <th>IP</th>
-                </tr>
-              </thead>
-              <tbody>
-                {MOCK_DATA.slice(0, (cursor + 1) * blockNum).map(d =>
-                  <Block data={d} key={d.id}>
-                    {d.id % blockNum === 0
-                      ? <span
-                          key={d.id / blockNum}
-                          ref={this.handleSentinel}
-                          index={d.id / blockNum}
-                        />
-                      : null}
-                  </Block>
-                )}
-              </tbody>
-            </table>
-          : null}
-      </div>
+      <table style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Id</th>
+            <th>Gender</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {MOCK_DATA.slice(0, (cursor + 1) * blockNum).map(d =>
+            <Block data={d} key={d.id}>
+              {d.id % blockNum === 0
+                ? <span ref={this.handleSentinel} index={d.id / blockNum} />
+                : null}
+            </Block>
+          )}
+        </tbody>
+      </table>
     );
   }
 }

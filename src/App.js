@@ -20,35 +20,41 @@ const ShowBtn = styled.p`
 `;
 
 function App() {
+  const [type, setType] = useState(0);
   const [open, setOpen] = useState(false);
-  return <InfiniteScroll />;
+  // return <InfiniteScroll />;
   return (
     <div className="App">
       <div style={{ width: 'content-fit' }}>
         <ShowBtn onClick={() => setOpen(open => !open)}>
           Show table |
           <span style={{ fontSize: '12px', color: '#AAA', marginLeft: '12px' }}>
-            normal version.
+            {type ? 'infinite scroll' : 'normal version.'}
           </span>
         </ShowBtn>
       </div>
-      {open
-        ? <table style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Id</th>
-                <th>Gender</th>
-                <th>IP</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MOCK_DATA.map(d => <Block data={d} key={d.id} />)}
-            </tbody>
-          </table>
-        : null}
+      <div style={{ width: 'content-fit' }}>
+        <ShowBtn onClick={() => setType(type => !type)}>Change Type</ShowBtn>
+      </div>
+      {type
+        ? <InfiniteScroll open={open} />
+        : open
+          ? <table style={{ width: '100%' }}>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Id</th>
+                  <th>Gender</th>
+                  <th>IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MOCK_DATA.map(d => <Block data={d} key={d.id} />)}
+              </tbody>
+            </table>
+          : null}
     </div>
   );
 }
